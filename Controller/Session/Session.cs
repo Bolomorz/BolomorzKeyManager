@@ -80,10 +80,10 @@ internal class Session
         Conceal();
     }
 
-    internal static async Task<Session> OpenSession(string user, string password)
+    internal static async Task<ReturnDialog<Session>> OpenSession(string user, string password)
     {
         var session = new Session();
-        await session.Authenticate(user, password);
-        return session;
+        ReturnDialog rd = await session.Authenticate(user, password);
+        return rd.Message.Success ? new(rd.Message, session) : new(rd.Message, null);
     }
 }

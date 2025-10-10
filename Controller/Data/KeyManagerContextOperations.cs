@@ -30,7 +30,7 @@ internal class KeyManagerContextOperations(Session session)
 
             var auth = Hashing.Authenticate(user, password);
 
-            return auth ? new(Message.Successful, user) : new(Message.WrongCredentials, null);
+            return auth ? new(Message.Authenticated, user) : new(Message.WrongCredentials, null);
         }
         catch (Exception ex)
         {

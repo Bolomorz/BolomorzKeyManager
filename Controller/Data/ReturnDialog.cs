@@ -5,11 +5,12 @@ internal class Message(bool success, string error)
     internal bool Success { get; init; } = success;
     internal string Error { get; init; } = error;
 
-    internal static Message FailedToCreateDatabase = new(false, "failed to create database.");
-    internal static Message Successful = new(true, "performing operation successful.");
-    internal static Message WrongCredentials = new(false, $"wrong credentials entered.");
-    internal static Message UnauthorizedAccess = new(false, "unauthorized access prohibited.");
-    internal static Message MasterPasswordMissing = new(false, $"master password is missing.");
+    internal static readonly Message FailedToCreateDatabase = new(false, "failed to create database.");
+    internal static readonly Message Successful = new(true, "performing operation successful.");
+    internal static readonly Message Authenticated = new(true, "authentication successful.");
+    internal static readonly Message WrongCredentials = new(false, "wrong credentials entered.");
+    internal static readonly Message UnauthorizedAccess = new(false, "unauthorized access prohibited.");
+    internal static readonly Message MasterPasswordMissing = new(false, "master password is missing.");
 
     internal static Message ErrorThrown(string error, string source)
         => new(false, $"following error has been thrown in [{source}]:\n{error}");
