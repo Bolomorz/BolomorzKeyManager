@@ -1,22 +1,74 @@
 using System.Security.Cryptography;
-using BolomorzKeyManager.Model;
-using System.Text;
 
-namespace BolomorzKeyManager.Controller.Security;
+namespace BolomorzKeyManager.Controller.Encryption;
 
-internal static class Encryption
+internal static class KeyEncryption
 {
-    internal static byte[] EncryptData(string data, UserAccount account, string master)
+    private const int SaltSize = 32;
+    private const int KeySize = 64;
+    private const int Iter = 25000;
+    internal static byte[] EncryptData(string data, string master)
     {
-        return [];
+        var salt = GenerateIV();
+        var key = DeriveKey(salt, master);
+        var iv = GenerateIV();
+
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+
+        using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+        using var ms = new MemoryStream();
+        ms.Write(salt, 0, SaltSize);
+        ms.Write(iv, 0, SaltSize);
+        using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
+        using var sw = new StreamWriter(cs);
+        sw.Write(data);
+
+        return ms.ToArray();
     }
 
-    private static byte[] DeriveKey(HashParameter param, string plain, string username)
+    internal static string? DecryptData(byte[] encrypted, string master)
     {
-        byte[] salt = Encoding.UTF8.GetBytes(param.ToString() + username);
+        var salt = new byte[SaltSize];
+        var iv = new byte[SaltSize];
+        byte[] cipher;
+        using (var ms = new MemoryStream(encrypted))
+        {
+            ms.Read(salt, 0, SaltSize);
+            ms.Read(iv, 0, SaltSize);
+            cipher = ms.ToArray();
+        }
 
-        var rfc = new Rfc2898DeriveBytes(plain, salt, param.Iterations, HashAlgorithmName.SHA512);
-        return rfc.GetBytes(param.Length);
+        var key = DeriveKey(salt, master);
+
+        using (var aes = Aes.Create())
+        {
+            aes.Key = key;
+            aes.IV = iv;
+
+            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using var ms = new MemoryStream(cipher);
+            using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+            using var sr = new StreamReader(cs);
+            return sr.ReadToEnd();
+        }
+
+    }
+
+    private static byte[] DeriveKey(byte[] salt, string master)
+    {
+        var rfc = new Rfc2898DeriveBytes(master, salt, Iter, HashAlgorithmName.SHA512);
+        return rfc.GetBytes(KeySize);
     }
     
+    private static byte[] GenerateIV()
+    {
+        var rand = RandomNumberGenerator.Create();
+        var salt = new byte[SaltSize];
+
+        rand.GetBytes(salt);
+
+        return salt;
+    }
 }

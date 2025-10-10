@@ -177,7 +177,107 @@ internal class KeyManagerContextOperations(Session session)
         }
 
     }
-    //internal async Task<ReturnDialog> SaveKey()
+    internal async Task<ReturnDialog> SaveKey(string name, string description, byte[] data, int? kid)
+    {
+        using var kmc = new KeyManagerContext();
+        using var transaction = await kmc.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead);
+
+        try
+        {
+            if (kmc.Keys is null)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.FailedToCreateDatabase);
+            }
+
+            if (Session.AuthUser is null || !Session.AuthUser.Authenticated)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            var key = await kmc.Keys.FirstOrDefaultAsync(x => x.KID == kid);
+
+            if (kid is null || key is null)
+            {
+                await kmc.Keys.AddAsync(new()
+                {
+                    Name = name,
+                    Description = description,
+                    EncryptedData = data,
+                    UAID = Session.AuthUser.UserAccount.UAID
+                });
+            }
+            else
+            {
+                if (key.UAID == Session.AuthUser.UserAccount.UAID)
+                {
+                    key.Name = name;
+                    key.Description = description;
+                    key.EncryptedData = data;
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    return new(Message.UnauthorizedAccess);
+                }
+            }
+
+            await kmc.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new(Message.Successful);
+        }
+        catch (Exception ex)
+        {
+            return new(Message.ErrorThrown(ex.ToString(), "SaveKey"));
+        }
+
+    }
+    internal async Task<ReturnDialog> DeleteKey(int kid)
+    {
+        using var kmc = new KeyManagerContext();
+        using var transaction = await kmc.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead);
+
+        try
+        {
+            if (kmc.Keys is null)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.FailedToCreateDatabase);
+            }
+
+            if (Session.AuthUser is null || !Session.AuthUser.Authenticated)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            var key = await kmc.Keys.FirstOrDefaultAsync(x => x.KID == kid);
+
+            if (key is not null && key.UAID == Session.AuthUser.UserAccount.UAID)
+            {
+                kmc.Keys.Remove(key);
+            }
+            else
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            await kmc.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new(Message.Successful);
+        }
+        catch (Exception ex)
+        {
+            return new(Message.ErrorThrown(ex.ToString(), "DeleteKey"));
+        }
+
+    }
     #endregion
 
     #region Password
@@ -229,6 +329,107 @@ internal class KeyManagerContextOperations(Session session)
         catch (Exception ex)
         {
             return new(Message.ErrorThrown(ex.ToString(), "GetPassword"), null);
+        }
+
+    }
+    internal async Task<ReturnDialog> SavePassword(string name, string description, byte[] data, int? pid)
+    {
+        using var kmc = new KeyManagerContext();
+        using var transaction = await kmc.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead);
+
+        try
+        {
+            if (kmc.Passwords is null)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.FailedToCreateDatabase);
+            }
+
+            if (Session.AuthUser is null || !Session.AuthUser.Authenticated)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            var password = await kmc.Passwords.FirstOrDefaultAsync(x => x.PID == pid);
+
+            if (pid is null || password is null)
+            {
+                await kmc.Passwords.AddAsync(new()
+                {
+                    Name = name,
+                    Description = description,
+                    EncryptedData = data,
+                    UAID = Session.AuthUser.UserAccount.UAID
+                });
+            }
+            else
+            {
+                if (password.UAID == Session.AuthUser.UserAccount.UAID)
+                {
+                    password.Name = name;
+                    password.Description = description;
+                    password.EncryptedData = data;
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    return new(Message.UnauthorizedAccess);
+                }
+            }
+
+            await kmc.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new(Message.Successful);
+        }
+        catch (Exception ex)
+        {
+            return new(Message.ErrorThrown(ex.ToString(), "SavePassword"));
+        }
+
+    }
+    internal async Task<ReturnDialog> DeletePassword(int pid)
+    {
+        using var kmc = new KeyManagerContext();
+        using var transaction = await kmc.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead);
+
+        try
+        {
+            if (kmc.Passwords is null)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.FailedToCreateDatabase);
+            }
+
+            if (Session.AuthUser is null || !Session.AuthUser.Authenticated)
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            var password = await kmc.Passwords.FirstOrDefaultAsync(x => x.PID == pid);
+
+            if (password is not null && password.UAID == Session.AuthUser.UserAccount.UAID)
+            {
+                kmc.Passwords.Remove(password);
+            }
+            else
+            {
+                await transaction.RollbackAsync();
+                return new(Message.UnauthorizedAccess);
+            }
+
+            await kmc.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new(Message.Successful);
+        }
+        catch (Exception ex)
+        {
+            return new(Message.ErrorThrown(ex.ToString(), "DeletePassword"));
         }
 
     }
