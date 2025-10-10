@@ -6,10 +6,15 @@ enum MasterMode { Revealed, Concealed }
 internal class Session
 {
     internal AuthUser? AuthUser { get; private set; }
-    internal KeyManagerContextOperations? Operations { get; private set; }
+    internal KeyManagerContextOperations Operations { get; private set; }
 
     private string? MasterPassword;
     internal MasterMode MasterMode = MasterMode.Concealed;
+
+    private Session()
+    {
+        Operations = new(this);
+    }
 
     private async Task<ReturnDialog> Authenticate(string user, string password)
     {
@@ -18,7 +23,6 @@ internal class Session
         if (rd.Message.Success && rd.ReturnValue is not null)
         {
             AuthUser = new(rd.ReturnValue, true);
-            Operations = new(this);
         }
 
         return new(rd.Message);
@@ -73,7 +77,6 @@ internal class Session
     internal void Close()
     {
         AuthUser = null;
-        Operations = null;
         Conceal();
     }
 
