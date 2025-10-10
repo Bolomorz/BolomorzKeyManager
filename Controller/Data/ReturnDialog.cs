@@ -9,7 +9,7 @@ internal class Message(bool success, string error)
     internal static Message Successful = new(true, "performing operation successful.");
     internal static Message WrongCredentials = new(false, $"wrong credentials entered.");
     internal static Message UnauthorizedAccess = new(false, "unauthorized access prohibited.");
-    internal static Message MasterPassword = new(false, $"master password is missing.");
+    internal static Message MasterPasswordMissing = new(false, $"master password is missing.");
 
     internal static Message ErrorThrown(string error, string source)
         => new(false, $"following error has been thrown in [{source}]:\n{error}");

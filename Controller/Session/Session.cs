@@ -39,7 +39,7 @@ internal class Session
         }
         else
         {
-            return new(Message.MasterPassword, null);
+            return new(Message.MasterPasswordMissing, null);
         }
     }
     internal ReturnDialog<string> Decrypt(byte[] data, string? master)
@@ -56,7 +56,7 @@ internal class Session
         }
         else
         {
-            return new(Message.MasterPassword, null);
+            return new(Message.MasterPasswordMissing, null);
         }
     }
 
