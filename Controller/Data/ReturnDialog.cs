@@ -11,6 +11,7 @@ internal class Message(bool success, string error)
     internal static readonly Message WrongCredentials = new(false, "wrong credentials entered.");
     internal static readonly Message UnauthorizedAccess = new(false, "unauthorized access prohibited.");
     internal static readonly Message MasterPasswordMissing = new(false, "master password is missing.");
+    internal static readonly Message FailedToCreateReturn = new(false, "failed to create return dialog.");
 
     internal static Message ErrorThrown(string error, string source)
         => new(false, $"following error has been thrown in [{source}]:\n{error}");

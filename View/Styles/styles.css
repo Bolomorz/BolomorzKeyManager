@@ -1,0 +1,17 @@
+window {
+    background-color: black;
+}
+
+label {
+    color: lightblue;
+}
+
+entry {
+    background-color: rgb(2, 1, 46);
+    color: lightblue;
+}
+
+button {
+    background-color: rgb(2, 1, 46);
+    color: lightblue;
+}
