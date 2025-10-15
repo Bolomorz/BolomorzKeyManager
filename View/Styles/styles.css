@@ -2,17 +2,22 @@ window {
     background-color: black;
 }
 
-label {
-    background-color: rgb(2, 1, 46);
+window label {
+    background-color:  rgb(0, 0, 31);
+    color: lightblue;
+}
+
+button label{
+    background-color:  darkblue;
     color: lightblue;
 }
 
 entry {
-    background-color: rgb(2, 1, 46);
+    background-color: rgb(0, 0, 31);
     color: lightblue;
 }
 
-button {
-    background-color: rgb(2, 1, 46);
+button{
+    background-color:  darkblue;
     color: lightblue;
 }

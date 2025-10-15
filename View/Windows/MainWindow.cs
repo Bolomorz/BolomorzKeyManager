@@ -6,6 +6,7 @@ namespace BolomorzKeyManager.View.Windows;
 internal class MainWindow : Window
 {
     private readonly KeyManager App;
+    private FormBase? Form;
     
     internal MainWindow(KeyManager app) : base("Bolomorz Key Manager")
     {
@@ -17,19 +18,22 @@ internal class MainWindow : Window
     internal void ShowLoginForm()
     {
         Clear();
-        var loginForm = new LoginForm(App, this);
+        Form = new LoginForm(App);
+        Add(Form.Form);
         ShowAll();
     }
 
     internal void ShowRegisterForm()
     {
         Clear();
-        var registerForm = new RegisterForm(App, this);
+        Form = new RegisterForm(App);
+        Add(Form.Form);
         ShowAll();
     }
 
     private void Clear()
     {
+        Form = null;
         foreach (var child in Children)
         {
             Remove(child);

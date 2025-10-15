@@ -1,16 +1,13 @@
 using BolomorzKeyManager.Controller.Auth;
 using BolomorzKeyManager.Controller.Data;
-using BolomorzKeyManager.View.Windows;
+using BolomorzKeyManager.Model;
 using Gtk;
 
 namespace BolomorzKeyManager.View.Widgets;
 
-internal class RegisterForm
+internal class RegisterForm : FormBase
 {
     private readonly KeyManager App;
-    private readonly MainWindow Window;
-
-    private readonly Grid Grid;
 
     private readonly Entry UEntry;
     private readonly Button UHide;
@@ -24,19 +21,17 @@ internal class RegisterForm
 
     private readonly Button Submit;
 
-    internal RegisterForm(KeyManager app, MainWindow window)
+    internal RegisterForm(KeyManager app) : base([])
     {
         App = app;
-        Window = window;
 
-        Grid = [];
-        Grid.RowSpacing = 10;
-        Grid.RowHomogeneous = true;
-        Grid.ColumnSpacing = 10;
-        Grid.ColumnHomogeneous = false;
-        Grid.Hexpand = true;
-        Grid.Vexpand = true;
-        Grid.Margin = 10;
+        Form.RowSpacing = 10;
+        Form.RowHomogeneous = true;
+        Form.ColumnSpacing = 10;
+        Form.ColumnHomogeneous = false;
+        Form.Hexpand = true;
+        Form.Vexpand = true;
+        Form.Margin = 10;
 
         var icon = App.Theme.LoadIcon("view-conceal-symbolic", 24, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
 
@@ -56,23 +51,21 @@ internal class RegisterForm
 
         Submit = new Button() { Label = "Register", Hexpand = true, Vexpand = true };
 
-        Grid.Attach(heading, 0, 0, 3, 1);
+        Form.Attach(heading, 0, 0, 3, 1);
 
-        Grid.Attach(ulabel, 0, 1, 1, 1);
-        Grid.Attach(UEntry, 1, 1, 1, 1);
-        Grid.Attach(UHide, 2, 1, 1, 1);
+        Form.Attach(ulabel, 0, 1, 1, 1);
+        Form.Attach(UEntry, 1, 1, 1, 1);
+        Form.Attach(UHide, 2, 1, 1, 1);
 
-        Grid.Attach(plabel1, 0, 2, 1, 1);
-        Grid.Attach(PEntry1, 1, 2, 1, 1);
-        Grid.Attach(PHide1, 2, 2, 1, 1);
+        Form.Attach(plabel1, 0, 2, 1, 1);
+        Form.Attach(PEntry1, 1, 2, 1, 1);
+        Form.Attach(PHide1, 2, 2, 1, 1);
 
-        Grid.Attach(plabel2, 0, 3, 1, 1);
-        Grid.Attach(PEntry2, 1, 3, 1, 1);
-        Grid.Attach(PHide2, 2, 3, 1, 1);
+        Form.Attach(plabel2, 0, 3, 1, 1);
+        Form.Attach(PEntry2, 1, 3, 1, 1);
+        Form.Attach(PHide2, 2, 3, 1, 1);
 
-        Grid.Attach(Submit, 0, 4, 3, 1);
-
-        window.Add(Grid);
+        Form.Attach(Submit, 0, 4, 3, 1);
 
         UHide.Clicked += OnUserHide;
         PHide1.Clicked += OnPwd1Hide;
@@ -87,22 +80,26 @@ internal class RegisterForm
         var usr = UEntry.Text;
         var pwd1 = PEntry1.Text;
         var pwd2 = PEntry2.Text;
-        if (pwd1 == pwd2)
+        if
+        (
+            pwd1 is not null && pwd1 != "" && pwd1 == pwd2 &&
+            usr is not null && usr != ""
+        )
         {
             var rd = await Session.CreateUser(usr, pwd1);
-            if(rd is not null)
+            if (rd is not null)
             {
-                Dialog.ErrorDialog(rd.Message, Window);
-                if (rd.Message.Success) Window.ShowLoginForm();
+                Dialog.ErrorDialog(rd.Message, App.Window);
+                if (rd.Message.Success) App.Window.ShowLoginForm();
             }
             else
             {
-                Dialog.ErrorDialog(Message.FailedToCreateReturn, Window);
+                Dialog.ErrorDialog(Message.FailedToCreateReturn, App.Window);
             }
         }
         else
         {
-            Dialog.ErrorDialog(Message.PasswordDontMatch, Window);
+            Dialog.ErrorDialog(Message.PasswordDontMatch, App.Window);
         }
 
     }
