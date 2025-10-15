@@ -10,6 +10,7 @@ internal class MainWindow : Window
     internal MainWindow(KeyManager app) : base("Bolomorz Key Manager")
     {
         App = app;
+        SetPosition(WindowPosition.Center);
         DeleteEvent += WindowDeleteEvent;
     }
 
@@ -17,6 +18,13 @@ internal class MainWindow : Window
     {
         Clear();
         var loginForm = new LoginForm(App, this);
+        ShowAll();
+    }
+
+    internal void ShowRegisterForm()
+    {
+        Clear();
+        var registerForm = new RegisterForm(App, this);
         ShowAll();
     }
 

@@ -86,4 +86,10 @@ internal class Session
         ReturnDialog rd = await session.Authenticate(user, password);
         return rd.Message.Success ? new(rd.Message, session) : new(rd.Message, null);
     }
+
+    internal static async Task<ReturnDialog> CreateUser(string user, string password)
+    {
+        ReturnDialog rd = await KeyManagerContextOperations.CreateUser(user, password);
+        return rd;
+    }
 }

@@ -12,4 +12,11 @@ internal static class Dialog
         dialog.Run();
         dialog.Destroy();
     }
+
+    internal static void InfoDialog(Message message, MainWindow window)
+    {
+        MessageDialog dialog = new(window, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, message.Error);
+        dialog.Run();
+        dialog.Destroy();
+    }
 }
