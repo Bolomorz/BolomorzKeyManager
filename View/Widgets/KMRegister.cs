@@ -1,14 +1,11 @@
 using BolomorzKeyManager.Controller.Auth;
 using BolomorzKeyManager.Controller.Data;
-using BolomorzKeyManager.Model;
 using Gtk;
 
 namespace BolomorzKeyManager.View.Widgets;
 
-internal class RegisterForm : FormBase
+internal class KMRegister : KMGrid
 {
-    private readonly KeyManager App;
-
     private readonly Entry UEntry;
     private readonly Button UHide;
 
@@ -18,20 +15,17 @@ internal class RegisterForm : FormBase
     private readonly Entry PEntry2;
     private readonly Button PHide2;
 
-
     private readonly Button Submit;
 
-    internal RegisterForm(KeyManager app) : base([])
+    internal KMRegister(KeyManager app) : base(app)
     {
-        App = app;
-
-        Form.RowSpacing = 10;
-        Form.RowHomogeneous = true;
-        Form.ColumnSpacing = 10;
-        Form.ColumnHomogeneous = false;
-        Form.Hexpand = true;
-        Form.Vexpand = true;
-        Form.Margin = 10;
+        RowSpacing = 10;
+        RowHomogeneous = true;
+        ColumnSpacing = 10;
+        ColumnHomogeneous = false;
+        Hexpand = true;
+        Vexpand = true;
+        Margin = 10;
 
         var icon = App.Theme.LoadIcon("view-conceal-symbolic", 24, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
 
@@ -51,21 +45,21 @@ internal class RegisterForm : FormBase
 
         Submit = new Button() { Label = "Register", Hexpand = true, Vexpand = true };
 
-        Form.Attach(heading, 0, 0, 3, 1);
+        Attach(heading, 0, 0, 3, 1);
 
-        Form.Attach(ulabel, 0, 1, 1, 1);
-        Form.Attach(UEntry, 1, 1, 1, 1);
-        Form.Attach(UHide, 2, 1, 1, 1);
+        Attach(ulabel, 0, 1, 1, 1);
+        Attach(UEntry, 1, 1, 1, 1);
+        Attach(UHide, 2, 1, 1, 1);
 
-        Form.Attach(plabel1, 0, 2, 1, 1);
-        Form.Attach(PEntry1, 1, 2, 1, 1);
-        Form.Attach(PHide1, 2, 2, 1, 1);
+        Attach(plabel1, 0, 2, 1, 1);
+        Attach(PEntry1, 1, 2, 1, 1);
+        Attach(PHide1, 2, 2, 1, 1);
 
-        Form.Attach(plabel2, 0, 3, 1, 1);
-        Form.Attach(PEntry2, 1, 3, 1, 1);
-        Form.Attach(PHide2, 2, 3, 1, 1);
+        Attach(plabel2, 0, 3, 1, 1);
+        Attach(PEntry2, 1, 3, 1, 1);
+        Attach(PHide2, 2, 3, 1, 1);
 
-        Form.Attach(Submit, 0, 4, 3, 1);
+        Attach(Submit, 0, 4, 3, 1);
 
         UHide.Clicked += OnUserHide;
         PHide1.Clicked += OnPwd1Hide;
@@ -90,7 +84,7 @@ internal class RegisterForm : FormBase
             if (rd is not null)
             {
                 Dialog.ErrorDialog(rd.Message, App.Window);
-                if (rd.Message.Success) App.Window.ShowLoginForm();
+                if (rd.Message.Success) App.Window.ShowLogin();
             }
             else
             {
@@ -104,19 +98,19 @@ internal class RegisterForm : FormBase
 
     }
 
-    private async void OnUserHide(object? sender, EventArgs e)
+    private void OnUserHide(object? sender, EventArgs e)
     {
         UEntry.Visibility = !UEntry.Visibility;
         UEntry.InvisibleCharSet = !UEntry.InvisibleCharSet;
     }
 
-    private async void OnPwd1Hide(object? sender, EventArgs e)
+    private void OnPwd1Hide(object? sender, EventArgs e)
     {
         PEntry1.Visibility = !PEntry1.Visibility;
         PEntry1.InvisibleCharSet = !PEntry1.InvisibleCharSet;
     }
 
-    private async void OnPwd2Hide(object? sender, EventArgs e)
+    private void OnPwd2Hide(object? sender, EventArgs e)
     {
         PEntry2.Visibility = !PEntry2.Visibility;
         PEntry2.InvisibleCharSet = !PEntry2.InvisibleCharSet;

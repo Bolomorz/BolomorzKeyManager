@@ -12,6 +12,20 @@ button label{
     color: lightblue;
 }
 
+menubar {
+    background-color:  rgb(0, 0, 31);
+    color: lightblue;
+}
+
+menu {
+    background-color: lightblue;
+}
+
+menu label{
+    background-color: lightblue;
+    color: black;
+}
+
 entry {
     background-color: rgb(0, 0, 31);
     color: lightblue;

@@ -4,10 +4,8 @@ using Gtk;
 
 namespace BolomorzKeyManager.View.Widgets;
 
-internal class LoginForm : FormBase
+internal class KMLogin : KMGrid
 {
-    private readonly KeyManager App;
-
     private readonly Entry UEntry;
     private readonly Button UHide;
 
@@ -17,17 +15,15 @@ internal class LoginForm : FormBase
     private readonly Button Register;
     private readonly Button Submit;
 
-    internal LoginForm(KeyManager app) : base([])
+    internal KMLogin(KeyManager app) : base(app)
     {
-        App = app;
-
-        Form.RowSpacing = 10;
-        Form.RowHomogeneous = true;
-        Form.ColumnSpacing = 10;
-        Form.ColumnHomogeneous = false;
-        Form.Hexpand = true;
-        Form.Vexpand = true;
-        Form.Margin = 10;
+        RowSpacing = 10;
+        RowHomogeneous = true;
+        ColumnSpacing = 10;
+        ColumnHomogeneous = false;
+        Hexpand = true;
+        Vexpand = true;
+        Margin = 10;
 
         var icon = App.Theme.LoadIcon("view-conceal-symbolic", 24, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
 
@@ -44,18 +40,18 @@ internal class LoginForm : FormBase
         Submit = new Button() { Label = "Login", Hexpand = true, Vexpand = true };
         Register = new Button() { Label = "Register", Hexpand = true, Vexpand = true };
 
-        Form.Attach(heading, 0, 0, 2, 1);
-        Form.Attach(Register, 2, 0, 1, 1);
+        Attach(heading, 0, 0, 2, 1);
+        Attach(Register, 2, 0, 1, 1);
 
-        Form.Attach(ulabel, 0, 1, 1, 1);
-        Form.Attach(UEntry, 1, 1, 1, 1);
-        Form.Attach(UHide, 2, 1, 1, 1);
+        Attach(ulabel, 0, 1, 1, 1);
+        Attach(UEntry, 1, 1, 1, 1);
+        Attach(UHide, 2, 1, 1, 1);
 
-        Form.Attach(plabel, 0, 2, 1, 1);
-        Form.Attach(PEntry, 1, 2, 1, 1);
-        Form.Attach(PHide, 2, 2, 1, 1);
+        Attach(plabel, 0, 2, 1, 1);
+        Attach(PEntry, 1, 2, 1, 1);
+        Attach(PHide, 2, 2, 1, 1);
 
-        Form.Attach(Submit, 0, 3, 3, 1);
+        Attach(Submit, 0, 3, 3, 1);
 
         UHide.Clicked += OnUserHide;
         PHide.Clicked += OnPwdHide;
@@ -74,7 +70,7 @@ internal class LoginForm : FormBase
         if (rd is not null && rd.Message.Success && rd.ReturnValue is not null)
         {
             App._Session = rd.ReturnValue;
-            Console.WriteLine("login successful");
+            App.Window.ShowMain();
         }
         else if (rd is not null)
         {
@@ -87,18 +83,18 @@ internal class LoginForm : FormBase
 
     }
 
-    private async void OnRegister(object? sender, EventArgs e)
+    private void OnRegister(object? sender, EventArgs e)
     {
-        App.Window.ShowRegisterForm();
+        App.Window.ShowRegister();
     }
 
-    private async void OnUserHide(object? sender, EventArgs e)
+    private void OnUserHide(object? sender, EventArgs e)
     {
         UEntry.Visibility = !UEntry.Visibility;
         UEntry.InvisibleCharSet = !UEntry.InvisibleCharSet;
     }
     
-    private async void OnPwdHide(object? sender, EventArgs e)
+    private void OnPwdHide(object? sender, EventArgs e)
     {
         PEntry.Visibility = !PEntry.Visibility;
         PEntry.InvisibleCharSet = !PEntry.InvisibleCharSet;

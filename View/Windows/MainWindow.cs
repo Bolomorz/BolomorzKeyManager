@@ -6,38 +6,46 @@ namespace BolomorzKeyManager.View.Windows;
 internal class MainWindow : Window
 {
     private readonly KeyManager App;
-    private FormBase? Form;
+    private KMGrid? Container;
     
     internal MainWindow(KeyManager app) : base("Bolomorz Key Manager")
     {
         App = app;
         SetPosition(WindowPosition.Center);
-        DeleteEvent += WindowDeleteEvent;
+        DeleteEvent += delegate { Application.Quit();  };
     }
 
-    internal void ShowLoginForm()
+    internal void ShowLogin()
     {
         Clear();
-        Form = new LoginForm(App);
-        Add(Form.Form);
+        Container = new KMLogin(App);
+        Add(Container);
         ShowAll();
     }
 
-    internal void ShowRegisterForm()
+    internal void ShowRegister()
     {
         Clear();
-        Form = new RegisterForm(App);
-        Add(Form.Form);
+        Container = new KMRegister(App);
+        Add(Container);
+        ShowAll();
+    }
+
+    internal void ShowMain()
+    {
+        Clear();
+        Container = new KMMain(App);
+        Add(Container);
         ShowAll();
     }
 
     private void Clear()
     {
-        Form = null;
+        Container = null;
         foreach (var child in Children)
         {
             Remove(child);
         }
     }
-    private void WindowDeleteEvent(object sender, DeleteEventArgs args) { Application.Quit(); }
+    
 }

@@ -23,7 +23,7 @@ internal class KeyManager : Application
         StyleContext.AddProviderForScreen(Screen.Default, provider, StyleProviderPriority.User);
 
         Window = new MainWindow(this);
-        Window.ShowLoginForm();
+        Window.ShowLogin();
 
         Run();
     }
