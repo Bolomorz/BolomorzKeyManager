@@ -5,16 +5,24 @@ window {
 window label {
     background-color:  rgb(0, 0, 31);
     color: lightblue;
+    font-size: medium;
 }
 
 button label{
     background-color:  darkblue;
     color: lightblue;
+    font-size: medium;
 }
 
 menubar {
     background-color:  rgb(0, 0, 31);
     color: lightblue;
+}
+
+menubar label{
+    background-color:  rgb(0, 0, 31);
+    color: lightblue;
+    font-size: large;
 }
 
 menu {
@@ -24,14 +32,20 @@ menu {
 menu label{
     background-color: lightblue;
     color: black;
+    font-size: medium;
 }
 
 entry {
     background-color: rgb(0, 0, 31);
     color: lightblue;
+    font-size: medium;
 }
 
 button{
     background-color:  darkblue;
     color: lightblue;
+}
+
+scrolledwindow{
+    background-color: black;
 }

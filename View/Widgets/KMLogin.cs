@@ -25,17 +25,15 @@ internal class KMLogin : KMGrid
         Vexpand = true;
         Margin = 10;
 
-        var icon = App.Theme.LoadIcon("view-conceal-symbolic", 24, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
-
         var heading = new Label("Login");
 
         var ulabel = new Label("Username:");
         UEntry = new Entry() { Visibility = true, InvisibleChar = '*', InvisibleCharSet = false, Hexpand = true, Vexpand = true };
-        UHide = new Button() { Image = new Image(icon), Hexpand = true, Vexpand = true };
+        UHide = new Button() { Image = new Image(App.ConcealSymbolic), Hexpand = true, Vexpand = true };
 
         var plabel = new Label("Password:");
         PEntry = new Entry() { Visibility = false, InvisibleChar = '*', InvisibleCharSet = true, Hexpand = true, Vexpand = true };
-        PHide = new Button() { Image = new Image(icon), Hexpand = true, Vexpand = true };
+        PHide = new Button() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = true };
 
         Submit = new Button() { Label = "Login", Hexpand = true, Vexpand = true };
         Register = new Button() { Label = "Register", Hexpand = true, Vexpand = true };
@@ -92,11 +90,14 @@ internal class KMLogin : KMGrid
     {
         UEntry.Visibility = !UEntry.Visibility;
         UEntry.InvisibleCharSet = !UEntry.InvisibleCharSet;
+        UHide.Image = UEntry.Visibility ? new Image(App.ConcealSymbolic) : new Image(App.RevealSymbolic);
     }
-    
+
     private void OnPwdHide(object? sender, EventArgs e)
     {
         PEntry.Visibility = !PEntry.Visibility;
         PEntry.InvisibleCharSet = !PEntry.InvisibleCharSet;
+        PHide.Image = PEntry.Visibility ? new Image(App.ConcealSymbolic) : new Image(App.RevealSymbolic);
     }
+    
 }
