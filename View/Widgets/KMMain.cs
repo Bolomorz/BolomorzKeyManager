@@ -26,22 +26,23 @@ internal class KMMain : KMGrid
     }
 
     #region App Menu
-    internal async void OnLogout(object? sender, EventArgs e)
+    internal void OnLogout(object? sender, EventArgs e)
     {
         App._Session?.Close();
         App._Session = null;
         App.Window.ShowLogin();
     }
 
-    internal async void OnAccount(object? sender, EventArgs e)
+    internal void OnAccount(object? sender, EventArgs e)
     {
         Remove(View);
+        View.Destroy();
         View = new KMAccountView(App, this);
         Attach(View, 0, 1, 1, 1);
         App.Window.ShowAll();
     }
 
-    internal async void OnClose(object? sender, EventArgs e)
+    internal void OnClose(object? sender, EventArgs e)
     {
         App._Session?.Close();
         App._Session = null;
@@ -50,34 +51,45 @@ internal class KMMain : KMGrid
     #endregion
 
     #region Key Menu
-    internal async void OnShowAll(object? sender, EventArgs e)
+    internal void OnShowAll(object? sender, EventArgs e)
     {
         Remove(View);
+        View.Destroy();
         View = new KMShowView(App, this, ShowMode.All);
         Attach(View, 0, 1, 1, 1);
         App.Window.ShowAll();
     }
-    internal async void OnShowKeys(object? sender, EventArgs e)
+    internal void OnShowKeys(object? sender, EventArgs e)
     {
         Remove(View);
+        View.Destroy();
         View = new KMShowView(App, this, ShowMode.Key);
         Attach(View, 0, 1, 1, 1);
         App.Window.ShowAll();
     }
-    internal async void OnShowPasswords(object? sender, EventArgs e)
+    internal void OnShowPasswords(object? sender, EventArgs e)
     {
         Remove(View);
+        View.Destroy();
         View = new KMShowView(App, this, ShowMode.Pwd);
         Attach(View, 0, 1, 1, 1);
         App.Window.ShowAll();
     }
-    internal async void OnNewKey(object? sender, EventArgs e)
+    internal void OnNewKey(object? sender, EventArgs e)
     {
-
+        Remove(View);
+        View.Destroy();
+        View = new KMNewView(App, this, NewMode.Key);
+        Attach(View, 0, 1, 1, 1);
+        App.Window.ShowAll();
     }
-    internal async void OnNewPassword(object? sender, EventArgs e)
+    internal void OnNewPassword(object? sender, EventArgs e)
     {
-
+        Remove(View);
+        View.Destroy();
+        View = new KMNewView(App, this, NewMode.Pwd);
+        Attach(View, 0, 1, 1, 1);
+        App.Window.ShowAll();
     }
     #endregion
 
@@ -86,18 +98,19 @@ internal class KMMain : KMGrid
     #endregion
 
     #region Navigate Views
-    internal async void OnStart(object? sender, EventArgs e)
+    internal void OnStart(object? sender, EventArgs e)
     {
         Remove(View);
+        View.Destroy();
         View = new KMWelcomeView(App, this);
         Attach(View, 0, 1, 1, 1);
         App.Window.ShowAll();
     }
-    internal async void OnKey(Model.Key key)
+    internal void OnKey(Model.Key key)
     {
 
     }
-    internal async void OnPwd(Password pwd)
+    internal void OnPwd(Password pwd)
     {
         
     }

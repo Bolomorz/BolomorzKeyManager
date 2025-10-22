@@ -41,11 +41,12 @@ internal class MainWindow : Window
 
     private void Clear()
     {
-        foreach (var child in Children)
+        if(Container is not null)
         {
-            Remove(child);
+            Remove(Container);
+            Container.Destroy();
+            Container = null;
         }
-        Container = null;
     }
     
 }

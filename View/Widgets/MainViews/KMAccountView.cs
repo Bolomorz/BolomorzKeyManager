@@ -49,19 +49,19 @@ internal class KMAccountView : KMGrid
 
         Attach(heading, 0, 0, 3, 1);
 
-        Attach(ulabel, 0, 1, 1, 1);
-        Attach(UEntry, 1, 1, 1, 1);
-        Attach(UHide, 2, 1, 1, 1);
+        Attach(ulabel, 0, 2, 1, 1);
+        Attach(UEntry, 1, 2, 1, 1);
+        Attach(UHide, 2, 2, 1, 1);
 
-        Attach(plabel1, 0, 2, 1, 1);
-        Attach(PEntry1, 1, 2, 1, 1);
-        Attach(PHide1, 2, 2, 1, 1);
+        Attach(plabel1, 0, 3, 1, 1);
+        Attach(PEntry1, 1, 3, 1, 1);
+        Attach(PHide1, 2, 3, 1, 1);
 
-        Attach(plabel2, 0, 3, 1, 1);
-        Attach(PEntry2, 1, 3, 1, 1);
-        Attach(PHide2, 2, 3, 1, 1);
+        Attach(plabel2, 0, 4, 1, 1);
+        Attach(PEntry2, 1, 4, 1, 1);
+        Attach(PHide2, 2, 4, 1, 1);
 
-        Attach(Submit, 0, 4, 3, 1);
+        Attach(Submit, 0, 6, 3, 1);
 
         UHide.Clicked += OnUserHide;
         PHide1.Clicked += OnPwd1Hide;

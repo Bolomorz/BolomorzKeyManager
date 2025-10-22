@@ -27,7 +27,7 @@ internal class KMShowView : KMGrid
         ShowMode = mode;
 
         RowSpacing = 10;
-        RowHomogeneous = true;
+        RowHomogeneous = false;
         ColumnSpacing = 10;
         ColumnHomogeneous = false;
         Hexpand = true;
@@ -36,48 +36,52 @@ internal class KMShowView : KMGrid
 
         Label heading = ShowMode switch
         {
-            ShowMode.All => new("Keys and Passwords"),
-            ShowMode.Key => new("Keys"),
-            ShowMode.Pwd => new("Passwords"),
+            ShowMode.All => new("Keys and Passwords") { Hexpand = true, Vexpand = false },
+            ShowMode.Key => new("Keys") { Hexpand = true, Vexpand = false },
+            ShowMode.Pwd => new("Passwords") { Hexpand = true, Vexpand = false },
             _ => throw new NotImplementedException()
         };
 
         var master = new Label("Mastermode:");
         Status = App._Session?.MasterMode switch
         {
-            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.Inactive), Hexpand = true, Vexpand = true },
-            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.Active), Hexpand = true, Vexpand = true },
+            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.Inactive), Hexpand = true, Vexpand = false },
+            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.Active), Hexpand = true, Vexpand = false },
             _ => throw new NotImplementedException()
         };
         SwitchMasterMode = App._Session?.MasterMode switch
         {
-            Controller.Auth.MasterMode.Concealed => new() { Label = "Activate" },
-            Controller.Auth.MasterMode.Revealed => new() { Label = "Deactivate" },
+            Controller.Auth.MasterMode.Concealed => new() { Label = "Activate", Hexpand = true, Vexpand = false },
+            Controller.Auth.MasterMode.Revealed => new() { Label = "Deactivate", Hexpand = true, Vexpand = false },
             _ => throw new NotImplementedException()
         };
-        MasterHide = new() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = true };
-        MasterEntry = new() { Visibility = false, InvisibleChar = '*', InvisibleCharSet = true, Hexpand = true, Vexpand = true };
+        MasterHide = new() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = false };
+        MasterEntry = new() { Visibility = false, InvisibleChar = '*', InvisibleCharSet = true, Hexpand = true, Vexpand = false };
 
-        QueryEntry = new() { Visibility = true, InvisibleChar = '*', InvisibleCharSet = false, Hexpand = true, Vexpand = true };
-        Query = new() { Label = "Search", Hexpand = true, Vexpand = true };
+        QueryEntry = new() { Visibility = true, InvisibleChar = '*', InvisibleCharSet = false, Hexpand = true, Vexpand = false };
+        Query = new() { Label = "Search", Hexpand = true, Vexpand = false };
 
         Table = [];
+        Table.Hexpand = true;
+        Table.Vexpand = true;
+        Table.Margin = 10;
+
         Grid = [];
         Table.Add(Grid);
 
 
         Attach(heading, 0, 0, 4, 1);
 
-        Attach(master, 0, 1, 3, 1);
-        Attach(Status, 3, 1, 1, 1);
-        Attach(SwitchMasterMode, 0, 2, 1, 1);
-        Attach(MasterEntry, 1, 2, 2, 1);
-        Attach(MasterHide, 3, 2, 1, 1);
+        Attach(master, 0, 2, 3, 1);
+        Attach(Status, 3, 2, 1, 1);
+        Attach(SwitchMasterMode, 0, 3, 1, 1);
+        Attach(MasterEntry, 1, 3, 2, 1);
+        Attach(MasterHide, 3, 3, 1, 1);
 
-        Attach(Query, 0, 3, 1, 1);
-        Attach(QueryEntry, 1, 3, 3, 1);
+        Attach(Query, 0, 5, 1, 1);
+        Attach(QueryEntry, 1, 5, 3, 1);
 
-        Attach(Table, 0, 4, 4, 1);
+        Attach(Table, 0, 6, 4, 1);
 
         FillItems();
 
@@ -125,6 +129,8 @@ internal class KMShowView : KMGrid
 
     private async void FillItems()
     {
+        Table.Remove(Grid);
+
         Grid = [];
 
         Grid.RowSpacing = 10;
@@ -135,9 +141,11 @@ internal class KMShowView : KMGrid
         Grid.Vexpand = true;
         Grid.Margin = 10;
 
-        if(App._Session is not null)
+        if (App._Session is not null)
         {
-            var query = QueryEntry.Text is not null && QueryEntry.Text.Trim() != "" ? QueryEntry.Text : null;
+            var query = QueryEntry.Text is not null && QueryEntry.Text.Trim().Length != 0 ? QueryEntry.Text : null;
+
+            var row = 0;
 
             var rdk = ShowMode == ShowMode.All || ShowMode == ShowMode.Key ? await App._Session.Operations.GetKeys(new(query)) : null;
             if (rdk is not null && rdk.Message.Success && rdk.ReturnValue is not null)
@@ -145,33 +153,39 @@ internal class KMShowView : KMGrid
                 var keys = rdk.ReturnValue;
                 for (int i = 0; i < keys.Count; i++)
                 {
-                    var lname = new Label(keys[i].Name);
-                    var ldesc = new Label(keys[i].Description);
-                    var breveal = new Button() { Image = new Image(App.RevealSymbolic) };
-                    breveal.Clicked += delegate { Main.OnKey(keys[i]); };
+                    var key = keys[i];
+                    var lname = new Label(key.Name) { Hexpand = true, Vexpand = false };
+                    var ldesc = new Label(key.Description) { Hexpand = true, Vexpand = false };
+                    var breveal = new Button() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = false };
+                    breveal.Clicked += delegate { Main.OnKey(key); };
 
-                    Grid.Attach(lname, 0, i, 1, 1);
-                    Grid.Attach(ldesc, 1, i, 2, 1);
-                    Grid.Attach(breveal, 3, i, 1, 1);
+                    Grid.Attach(lname, 0, row, 1, 1);
+                    Grid.Attach(ldesc, 1, row, 2, 1);
+                    Grid.Attach(breveal, 3, row, 1, 1);
+                    row++;
                 }
             }
 
             var rdp = ShowMode == ShowMode.All || ShowMode == ShowMode.Pwd ? await App._Session.Operations.GetPasswords(new(query)) : null;
-            if(rdp is not null && rdp.Message.Success && rdp.ReturnValue is not null)
+            if (rdp is not null && rdp.Message.Success && rdp.ReturnValue is not null)
             {
                 var pwds = rdp.ReturnValue;
                 for (int i = 0; i < pwds.Count; i++)
                 {
-                    var lname = new Label(pwds[i].Name);
-                    var ldesc = new Label(pwds[i].Description);
-                    var breveal = new Button() { Image = new Image(App.RevealSymbolic) };
-                    breveal.Clicked += delegate { Main.OnPwd(pwds[i]); };
+                    var pwd = pwds[i];
+                    var lname = new Label(pwd.Name) { Hexpand = true, Vexpand = false };
+                    var ldesc = new Label(pwd.Description) { Hexpand = true, Vexpand = false };
+                    var breveal = new Button() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = false };
+                    breveal.Clicked += delegate { Main.OnPwd(pwd); };
 
-                    Grid.Attach(lname, 0, i, 1, 1);
-                    Grid.Attach(ldesc, 1, i, 2, 1);
-                    Grid.Attach(breveal, 3, i, 1, 1);
+                    Grid.Attach(lname, 0, row, 1, 1);
+                    Grid.Attach(ldesc, 1, row, 2, 1);
+                    Grid.Attach(breveal, 3, row, 1, 1);
+                    row++;
                 }
             }
         }
+
+        Table.Add(Grid);
     }
 }

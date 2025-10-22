@@ -19,4 +19,13 @@ internal static class Dialog
         dialog.Run();
         dialog.Destroy();
     }
+
+    internal static string? InputDialog(string message, MainWindow window)
+    {
+        InputDialog dialog = new(message, window);
+        var text = dialog.Run();
+        dialog.Destroy();
+        return text;
+    }
+    
 }

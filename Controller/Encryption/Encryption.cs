@@ -4,8 +4,8 @@ namespace BolomorzKeyManager.Controller.Encryption;
 
 internal static class KeyEncryption
 {
-    private const int SaltSize = 32;
-    private const int KeySize = 64;
+    private const int SaltSize = 16;
+    private const int KeySize = 32;
     private const int Iter = 25000;
     internal static byte[] EncryptData(string data, string master)
     {
@@ -14,6 +14,7 @@ internal static class KeyEncryption
         var iv = GenerateIV();
 
         using var aes = Aes.Create();
+
         aes.Key = key;
         aes.IV = iv;
 
