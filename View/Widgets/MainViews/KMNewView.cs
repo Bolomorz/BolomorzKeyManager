@@ -109,7 +109,7 @@ internal class KMNewView : KMGrid
 
         if (App._Session is null) return;
 
-        var master = App._Session.MasterMode == Controller.Auth.MasterMode.Revealed ? null : Dialog.InputDialog("insert master password", App.Window);
+        var master = App._Session.MasterMode == Controller.Auth.MasterMode.Revealed ? null : Dialog.InputDialog("insert master password", App);
         var rde = App._Session.Encrypt(data, master);
 
         if(rde is not null && rde.Message.Success && rde.ReturnValue is not null)
@@ -133,12 +133,12 @@ internal class KMNewView : KMGrid
         }
         else
         {
-            Dialog.ErrorDialog(Message.FailedToCreateReturn, App.Window);
+            Dialog.ErrorDialog(rde is not null ? rde.Message : Message.FailedToCreateReturn, App.Window);
         }
         
     }
 
-    private async void OnSwitchMasterMode(object? sender, EventArgs e)
+    private void OnSwitchMasterMode(object? sender, EventArgs e)
     {
         switch (App._Session?.MasterMode)
         {

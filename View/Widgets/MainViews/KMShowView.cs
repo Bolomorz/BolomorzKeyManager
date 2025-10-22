@@ -91,7 +91,7 @@ internal class KMShowView : KMGrid
 
     }
 
-    private async void OnSwitchMasterMode(object? sender, EventArgs e)
+    private void OnSwitchMasterMode(object? sender, EventArgs e)
     {
         switch (App._Session?.MasterMode)
         {

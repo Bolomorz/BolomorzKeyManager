@@ -20,9 +20,9 @@ internal static class Dialog
         dialog.Destroy();
     }
 
-    internal static string? InputDialog(string message, MainWindow window)
+    internal static string? InputDialog(string message, KeyManager app)
     {
-        InputDialog dialog = new(message, window);
+        InputDialog dialog = new(message, app);
         var text = dialog.Run();
         dialog.Destroy();
         return text;
