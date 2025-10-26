@@ -46,8 +46,8 @@ internal class KMNewView : KMGrid
         var master = new Label("Mastermode:");
         Status = App._Session?.MasterMode switch
         {
-            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.Inactive), Hexpand = true, Vexpand = true },
-            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.Active), Hexpand = true, Vexpand = true },
+            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.InactiveSymbolic), Hexpand = true, Vexpand = true },
+            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.ActiveSymbolic), Hexpand = true, Vexpand = true },
             _ => throw new NotImplementedException()
         };
         SwitchMasterMode = App._Session?.MasterMode switch
@@ -148,14 +148,14 @@ internal class KMNewView : KMGrid
                     App._Session.Reveal(MasterEntry.Text);
                     SwitchMasterMode.Label = "Deactivate";
                     Status.Label = "Active";
-                    Status.Image = new Image(App.Active);
+                    Status.Image = new Image(App.ActiveSymbolic);
                 }
             break;
             case Controller.Auth.MasterMode.Revealed:
                 App._Session.Conceal(); 
                 SwitchMasterMode.Label = "Activate";
                 Status.Label = "Inactive";
-                Status.Image = new Image(App.Inactive);
+                Status.Image = new Image(App.InactiveSymbolic);
                 MasterEntry.Text = "";
             break;
         }

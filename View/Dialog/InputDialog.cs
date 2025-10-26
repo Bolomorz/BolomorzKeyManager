@@ -6,7 +6,7 @@ namespace BolomorzKeyManager.View;
 
 internal class InputDialog : Gtk.Dialog
 {
-    private KeyManager App;
+    private readonly KeyManager App;
     private readonly Entry Input;
     private readonly Button BtHide;
 

@@ -31,37 +31,55 @@ internal class Session
 
     internal ReturnDialog<byte[]> Encrypt(string data, string? master)
     {
-        if (master is null && MasterPassword is not null)
+        
+        try
         {
-            var encrypted = Encryption.KeyEncryption.EncryptData(data, MasterPassword);
-            return new(Message.Successful, encrypted);
+            if (master is null && MasterPassword is not null)
+            {
+                var encrypted = Encryption.KeyEncryption.EncryptData(data, MasterPassword);
+                return new(Message.Successful, encrypted);
+            }
+            else if (master is not null)
+            {
+                var encrypted = Encryption.KeyEncryption.EncryptData(data, master);
+                return new(Message.Successful, encrypted);
+            }
+            else
+            {
+                return new(Message.MasterPasswordMissing, null);
+            }
         }
-        else if (master is not null)
+        catch (Exception ex)
         {
-            var encrypted = Encryption.KeyEncryption.EncryptData(data, master);
-            return new(Message.Successful, encrypted);
+            return new(Message.ErrorThrown(ex.ToString(), "Session.Encrypt"), null);
         }
-        else
-        {
-            return new(Message.MasterPasswordMissing, null);
-        }
+        
     }
     internal ReturnDialog<string> Decrypt(byte[] data, string? master)
     {
-        if (master is null && MasterPassword is not null)
+
+        try
         {
-            var decrypted = Encryption.KeyEncryption.DecryptData(data, MasterPassword);
-            return new(Message.Successful, decrypted);
+            if (master is null && MasterPassword is not null)
+            {
+                var decrypted = Encryption.KeyEncryption.DecryptData(data, MasterPassword);
+                return new(Message.Successful, decrypted);
+            }
+            else if (master is not null)
+            {
+                var decrypted = Encryption.KeyEncryption.DecryptData(data, master);
+                return new(Message.Successful, decrypted);
+            }
+            else
+            {
+                return new(Message.MasterPasswordMissing, null);
+            }
         }
-        else if (master is not null)
+        catch (Exception ex)
         {
-            var decrypted = Encryption.KeyEncryption.DecryptData(data, master);
-            return new(Message.Successful, decrypted);
+            return new(Message.ErrorThrown(ex.ToString(), "Session.Encrypt"), null);
         }
-        else
-        {
-            return new(Message.MasterPasswordMissing, null);
-        }
+
     }
 
     internal void Reveal(string master)

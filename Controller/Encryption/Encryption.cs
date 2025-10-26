@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 
 namespace BolomorzKeyManager.Controller.Encryption;
 
@@ -13,32 +14,37 @@ internal static class KeyEncryption
         var key = DeriveKey(salt, master);
         var iv = GenerateIV();
 
-        using var aes = Aes.Create();
-
-        aes.Key = key;
-        aes.IV = iv;
-
-        using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-        using var ms = new MemoryStream();
-        ms.Write(salt, 0, SaltSize);
-        ms.Write(iv, 0, SaltSize);
-        using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
-        using var sw = new StreamWriter(cs);
-        sw.Write(data);
-
-        return ms.ToArray();
+        using (var aes = Aes.Create())
+        {
+            aes.Key = key;
+            aes.IV = iv;
+            aes.Padding = PaddingMode.PKCS7;
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(salt, 0, SaltSize);
+                ms.Write(iv, 0, SaltSize);
+                using (var cs = new CryptoStream(ms, aes.CreateEncryptor(aes.Key, aes.IV), CryptoStreamMode.Write))
+                {
+                    using (var sw = new StreamWriter(cs))
+                    {
+                        sw.Write(data);
+                    }
+                }
+                return ms.ToArray();
+            }
+        }
     }
 
     internal static string? DecryptData(byte[] encrypted, string master)
     {
         var salt = new byte[SaltSize];
         var iv = new byte[SaltSize];
-        byte[] cipher;
+        var cipher = new byte[SaltSize];
         using (var ms = new MemoryStream(encrypted))
         {
             ms.Read(salt, 0, SaltSize);
             ms.Read(iv, 0, SaltSize);
-            cipher = ms.ToArray();
+            ms.Read(cipher, 0, SaltSize);
         }
 
         var key = DeriveKey(salt, master);
@@ -47,12 +53,19 @@ internal static class KeyEncryption
         {
             aes.Key = key;
             aes.IV = iv;
-
-            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using var ms = new MemoryStream(cipher);
-            using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
-            using var sr = new StreamReader(cs);
-            return sr.ReadToEnd();
+            aes.Padding = PaddingMode.PKCS7;
+            
+            using (var ms = new MemoryStream(cipher))
+            {
+                using (var cs = new CryptoStream(ms, aes.CreateDecryptor(aes.Key, aes.IV), CryptoStreamMode.Read))
+                {
+                    using (var sr = new StreamReader(cs))
+                    {
+                        var data = sr.ReadToEnd();
+                        return data;
+                    }
+                }
+            }
         }
 
     }

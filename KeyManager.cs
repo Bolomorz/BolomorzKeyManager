@@ -12,8 +12,9 @@ internal class KeyManager : Application
 
     internal readonly Pixbuf ConcealSymbolic;
     internal readonly Pixbuf RevealSymbolic;
-    internal readonly Pixbuf Active;
-    internal readonly Pixbuf Inactive;
+    internal readonly Pixbuf ActiveSymbolic;
+    internal readonly Pixbuf InactiveSymbolic;
+    internal readonly Pixbuf DeleteSymbolic;
 
     internal KeyManager() : base("bolomorz.keymanager", GLib.ApplicationFlags.None)
     {
@@ -23,8 +24,9 @@ internal class KeyManager : Application
         var theme = IconTheme.Default;
         ConcealSymbolic = theme.LoadIcon("view-conceal-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
         RevealSymbolic = theme.LoadIcon("view-reveal-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
-        Inactive = theme.LoadIcon("process-stop-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
-        Active = theme.LoadIcon("selection-mode-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
+        InactiveSymbolic = theme.LoadIcon("process-stop-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
+        ActiveSymbolic = theme.LoadIcon("selection-mode-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
+        DeleteSymbolic = theme.LoadIcon("edit-delete-symbolic", 25, IconLookupFlags.UseBuiltin | IconLookupFlags.GenericFallback);
 
         string css = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "View", "Styles", "styles.css");
         var provider = new CssProvider();

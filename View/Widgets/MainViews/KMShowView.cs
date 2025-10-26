@@ -45,8 +45,8 @@ internal class KMShowView : KMGrid
         var master = new Label("Mastermode:");
         Status = App._Session?.MasterMode switch
         {
-            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.Inactive), Hexpand = true, Vexpand = false },
-            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.Active), Hexpand = true, Vexpand = false },
+            Controller.Auth.MasterMode.Concealed => new() { Label = "Inactive", Image = new Image(App.InactiveSymbolic), Hexpand = true, Vexpand = false },
+            Controller.Auth.MasterMode.Revealed => new() { Label = "Active", Image = new Image(App.ActiveSymbolic), Hexpand = true, Vexpand = false },
             _ => throw new NotImplementedException()
         };
         SwitchMasterMode = App._Session?.MasterMode switch
@@ -70,7 +70,7 @@ internal class KMShowView : KMGrid
         Table.Add(Grid);
 
 
-        Attach(heading, 0, 0, 4, 1);
+        Attach(heading, 0, 0, 5, 1);
 
         Attach(master, 0, 2, 3, 1);
         Attach(Status, 3, 2, 1, 1);
@@ -101,14 +101,14 @@ internal class KMShowView : KMGrid
                     App._Session.Reveal(MasterEntry.Text);
                     SwitchMasterMode.Label = "Deactivate";
                     Status.Label = "Active";
-                    Status.Image = new Image(App.Active);
+                    Status.Image = new Image(App.ActiveSymbolic);
                 }
             break;
             case Controller.Auth.MasterMode.Revealed:
                 App._Session.Conceal(); 
                 SwitchMasterMode.Label = "Activate";
                 Status.Label = "Inactive";
-                Status.Image = new Image(App.Inactive);
+                Status.Image = new Image(App.InactiveSymbolic);
                 MasterEntry.Text = "";
             break;
         }
@@ -131,6 +131,8 @@ internal class KMShowView : KMGrid
     {
         Table.Remove(Grid);
 
+        Table.MinContentHeight = 100;
+
         Grid = [];
 
         Grid.RowSpacing = 10;
@@ -138,7 +140,7 @@ internal class KMShowView : KMGrid
         Grid.ColumnSpacing = 10;
         Grid.ColumnHomogeneous = false;
         Grid.Hexpand = true;
-        Grid.Vexpand = true;
+        Grid.Vexpand = false;
         Grid.Margin = 10;
 
         if (App._Session is not null)
@@ -157,11 +159,14 @@ internal class KMShowView : KMGrid
                     var lname = new Label(key.Name) { Hexpand = true, Vexpand = false };
                     var ldesc = new Label(key.Description) { Hexpand = true, Vexpand = false };
                     var breveal = new Button() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = false };
-                    breveal.Clicked += delegate { Main.OnKey(key); };
+                    var bdelete = new Button() { Image = new Image(App.DeleteSymbolic), Hexpand = true, Vexpand = false };
+                    breveal.Clicked += delegate { Main.OnReveal(key); };
+                    bdelete.Clicked += async delegate { await Main.OnDelete(key); FillItems(); App.Window.ShowAll(); };
 
-                    Grid.Attach(lname, 0, row, 1, 1);
-                    Grid.Attach(ldesc, 1, row, 2, 1);
-                    Grid.Attach(breveal, 3, row, 1, 1);
+                    Grid.Attach(bdelete, 0, row, 1, 1);
+                    Grid.Attach(lname, 1, row, 1, 1);
+                    Grid.Attach(ldesc, 2, row, 2, 1);
+                    Grid.Attach(breveal, 4, row, 1, 1);
                     row++;
                 }
             }
@@ -176,11 +181,14 @@ internal class KMShowView : KMGrid
                     var lname = new Label(pwd.Name) { Hexpand = true, Vexpand = false };
                     var ldesc = new Label(pwd.Description) { Hexpand = true, Vexpand = false };
                     var breveal = new Button() { Image = new Image(App.RevealSymbolic), Hexpand = true, Vexpand = false };
-                    breveal.Clicked += delegate { Main.OnPwd(pwd); };
+                    var bdelete = new Button() { Image = new Image(App.DeleteSymbolic), Hexpand = true, Vexpand = false };
+                    breveal.Clicked += delegate { Main.OnReveal(pwd); };
+                    bdelete.Clicked += async delegate { await Main.OnDelete(pwd); FillItems(); App.Window.ShowAll(); };
 
-                    Grid.Attach(lname, 0, row, 1, 1);
-                    Grid.Attach(ldesc, 1, row, 2, 1);
-                    Grid.Attach(breveal, 3, row, 1, 1);
+                    Grid.Attach(bdelete, 0, row, 1, 1);
+                    Grid.Attach(lname, 1, row, 1, 1);
+                    Grid.Attach(ldesc, 2, row, 2, 1);
+                    Grid.Attach(breveal, 4, row, 1, 1);
                     row++;
                 }
             }

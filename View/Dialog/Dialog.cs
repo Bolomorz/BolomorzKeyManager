@@ -27,5 +27,20 @@ internal static class Dialog
         dialog.Destroy();
         return text;
     }
+
+    internal static void OutputDialog(string name, string decrypt, KeyManager app)
+    {
+        OutputDialog dialog = new(name, decrypt, app);
+        dialog.Run();
+        dialog.Destroy();
+    }
+
+    internal static ResponseType ConfirmDialog(string message, MainWindow window)
+    {
+        MessageDialog dialog = new(window, DialogFlags.Modal, MessageType.Question, ButtonsType.OkCancel, message);
+        ResponseType response = (ResponseType)dialog.Run();
+        dialog.Destroy();
+        return response;
+    }
     
 }
