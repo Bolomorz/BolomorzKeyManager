@@ -44,7 +44,7 @@ internal static class KeyEncryption
         {
             ms.Read(salt, 0, SaltSize);
             ms.Read(iv, 0, SaltSize);
-            ms.Read(cipher, 0, SaltSize);
+            ms.Read(cipher, 0, SaltSize); //Saltzie works becaus encrypted.Length = 3*Saltsize (48)
         }
 
         var key = DeriveKey(salt, master);
